@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {fetchPopularRepos} from '../utils/api'
 import { FaUser, FaStar, FaCodeBranch, FaExclamationTriangle} from 'react-icons/fa'
+import Card from './Card'
+import Loading from './Loading'
+import Tooltip from './Tooltip'
 
 function LanguagesNav ({ selected, onUpdateLanguage }) {
   const languages = ['All', 'JavaScript', 'Ruby', 'Java', 'CSS', 'Python']
@@ -30,38 +33,37 @@ function ReposGrid({ repos }) {
         const { login, avatar_url } = owner
 
         return (
-          <li key={html_url} className='repo bg-light'>
-            <h4 className='header-lg center-text'>
-              #{ i + 1}
-            </h4>
-            <img
-              className='avatar'              
-              src={avatar_url}
-            />
-            <h2 className="center-text">
-              <a href={html_url} className="link">{login}</a>
-            </h2>
+          <li key={html_url}>
+            <Card
+              header={`#${ i + 1}`}
+              avatar={avatar_url}
+              href={html_url}
+              name={login}
+            >
+              <ul className="card-list">
+                <li>
+                  <Tooltip text='Uername'>
+                    <FaUser color='rgb(255,0,0)' size={22}/>
+                    <a href={`https://github.com/${login}`}>
+                      {login}
+                    </a>
+                  </Tooltip>
 
-            <ul className="card-list">
-
-              <li>
-                <FaUser color='rgb(255,0,0)' size={22}/>
-                <a href={`https://github.com/${login}`}>
-                  {login}
-                </a>
-
-              </li>
-              <li>
-                <FaStar color='rgb(0,255,0)' size={22}/>
-                  {stargazers_count.toLocaleString()} stars
-              </li>
-
-              <li>
-                <FaExclamationTriangle color='rgb(0,0,255)' size={22}/>
-                  {open_issues.toLocaleString()} issues}
-              </li>
-
-            </ul>
+                </li>
+                <li>
+                  <FaStar color='rgb(0,255,0)' size={22}/>
+                    {stargazers_count.toLocaleString()} stars
+                </li>
+                <li>
+                  <FaCodeBranch color='rgb(129, 195, 245)' size={22} />
+                  {forks.toLocaleString()} forks
+                </li>
+                <li>
+                  <FaExclamationTriangle color='rgb(0,0,255)' size={22}/>
+                    {open_issues.toLocaleString()} issues
+                </li>
+              </ul>
+            </Card>
           </li>
         )
       })}
@@ -130,7 +132,7 @@ export default class Popular extends React.Component {
           onUpdateLanguage={this.updateLanguage}
         />
 
-        {this.isLoading() && <p>LOADING</p>}
+        {this.isLoading() && <Loading text='Loading repos' speed={200} /> }
 
         {error && <p>error</p>}
 
